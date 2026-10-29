@@ -1,0 +1,104 @@
+# ESLint Decisions
+
+## Explanations and Modified Standards
+
+**LOL vs. SOL** marks a rule where breaking it is sometimes the better engineering choice. Weigh whether satisfying the rule makes the code worse; if it does, disable the rule for that section only.
+
+- Perfectionist ordering — imports are grouped by kind (Node built-ins and npm packages, then local files) and alphabetized within each group. Objects are sorted at every nesting level; spreads act as fences. Only string arrays assigned directly to a variable are sorted, because other arrays are often positional, such as `['error', 'always']` or `[x, y]`. Top-level `const` declarations, including arrow functions, stay in dependency order; `perfectionist/sort-modules` sorts only `class` and `function` declarations. Autofix can reorder code with side effects, so review `--fix` output.
+- `accessor-pairs` — replaced by `perfectionist/sort-classes`: properties (including arrow-function properties), constructor, getters, setters, then regular methods. Each group is alphabetized by member name; `#` is ignored, and `static`/private members are not split into their own groups.
+- `complexity` — LOL vs. SOL.
+- `eqeqeq` — LOL vs. SOL.
+- `for-direction` — LOL vs. SOL, such as a loop whose counter is also changed inside the body.
+- `func-names` — `'never'`; arrow functions are preferred, so `prefer-arrow-callback` warns.
+- `func-style` — LOL vs. SOL. Avoid the `function` keyword in new code. Generators cannot be arrow functions, so `const ids = function* () {};` or a disable is acceptable.
+- `grouped-accessor-pairs` — omitted; it conflicts with `perfectionist/sort-classes`, which sorts all getters before all setters.
+- `lines-around-directive` / `newline-after-var` / `newline-before-return` — replaced by `@stylistic/padding-line-between-statements`.
+- `@stylistic/linebreak-style` — `.gitattributes` keeps git from converting files to `CRLF` on Windows.
+- `max-classes-per-file` — LOL vs. SOL. A closely tied helper class can stay with its main class, such as a `Node` class beside a linked list.
+- `max-depth` / `@stylistic/max-len` / `max-statements` — LOL vs. SOL.
+- `max-params` — LOL vs. SOL. Prefer an options object (`ops`) over a long parameter list.
+- `@stylistic/max-statements-per-line` — one-line blocks such as `if (ready) { start(); }` are flagged too, so `@stylistic/brace-style` uses `allowSingleLine: false` to agree.
+- `@stylistic/multiline-comment-style` — `caboodle/jsdoc-block-comments` also requires `/**` openings; `/*!` license comments and `eslint`/`global` directive comments are exempt.
+- `no-await-in-loop` — LOL vs. SOL, such as rate limits or steps that depend on the previous one.
+- `no-bitwise` — LOL vs. SOL.
+- `no-class-assign` / `no-func-assign` — LOL vs. SOL, such as nulling out a class to prevent further use.
+- `no-confusing-arrow` / `no-eq-null` / `@stylistic/no-mixed-spaces-and-tabs` / `no-unused-labels` / `nonblock-statement-body-position` / `one-var-declaration-per-line` / `vars-on-top` — omitted; already covered by `arrow-body-style`, `eqeqeq`, `@stylistic/indent`, `no-labels`, `curly`, `one-var`, and `no-var`.
+- `no-console` / `no-debugger` — warnings in development, errors when `NODE_ENV=production`. Remove before production unless explicitly disabled for that section.
+- `no-else-return` / `no-lonely-if` / `no-negated-condition` — support the "never nesting" style: return early and keep the main path unindented.
+- `no-empty-function` — LOL vs. SOL, for a true no-op.
+- `no-eval` / `no-new-func` — when evaluating code is truly needed, prefer `new Function` over `eval()` and disable `no-new-func` for that section.
+- `no-extend-native` — LOL vs. SOL; monkey patching built-ins is sometimes intended.
+- `no-fallthrough` — off; intentional fall-through between `case` clauses, including into `default`, is allowed.
+- `no-implicit-globals` — only applies to files parsed as classic scripts; all JavaScript here is parsed as ES modules.
+- `no-octal` / `no-octal-escape` / `no-with` / `strict` — omitted; ES modules are always strict, and the strict-mode syntax these rules check is already an error.
+- `no-restricted-imports` — empty ban list; each project adds its own `paths` and `patterns`.
+- `no-restricted-syntax` — LOL vs. SOL. Bans the `function` keyword; generators, class methods, getters, setters, and object methods are exempt because they cannot be arrow functions.
+- `no-undef` — browser and Node globals come from `.eslint/globals.min.json`, a maintained copy of the `browser` and `nodeBuiltin` sets from the `globals` package, kept in-repo to avoid a dependency. `nodeBuiltin` excludes CommonJS names such as `require` and `__dirname`. To add a global, add it to the matching set with `false` (read-only) or `true` (writable).
+- `no-underscore-dangle` / `no-unused-vars` — a lone `_`, or a leading `_` on a function parameter or caught error, marks it as intentionally unused. Other `_`-prefixed names are flagged.
+- `@stylistic/no-tabs` — `.vscode/settings.json` makes the editor insert 4 spaces for a tab.
+- JSON — linted with the official `@eslint/json` plugin as strict JSON (`json/json`), so comments and trailing commas are errors. Object keys are sorted in ascending natural-alphanumeric order at every nesting level with `json/sort-keys`; indentation comes from the editor settings.
+- `@html-eslint/lowercase` — replaced by `caboodle/html-lowercase`, which reuses the plugin rule but allows `<!DOCTYPE html>`. It removes the plugin's `Doctype` check by name, so re-check it after `@html-eslint` upgrades.
+- `@html-eslint/require-title` / `require-meta-charset` / `require-meta-viewport` / `require-meta-description` / `require-open-graph-protocol` — omitted; templates often contain a `<head>` whose tags come from includes, which these rules would flag as missing. `head-order` stays because it only checks the order of tags present in the file.
+- `@html-eslint/quotes` — double quotes for HTML attributes, unlike single quotes in JavaScript.
+- `@html-eslint/use-baseline` — LOL vs. SOL. Warns about web features that are not yet widely supported across browsers.
+- CSS — linted with the official `@eslint/css` plugin, which has no formatting rules; indentation comes from the editor settings. Its parser does not support nested rules that start with an element name, such as `a::after { }` inside another rule; write `& a::after { }` instead.
+- `css/no-invalid-properties` — `allowUnknownVariables`, because custom properties are usually defined in other files (such as tokens) that are bundled together.
+- `css/no-important` / `css/prefer-logical-properties` / `css/use-baseline` — LOL vs. SOL. Prefer logical properties such as `inline-size` and `margin-inline`; warnings flag physical properties and features not yet widely supported.
+
+## Implicit Omissions
+Reviewed and intentionally not enabled.
+
+- `@stylistic/array-element-newline`
+- `@html-eslint/attrs-newline`
+- `callback-return` / `n/callback-return`
+- `class-methods-use-this`
+- `consistent-this`
+- `global-require` / `n/global-require`
+- `handle-callback-err` / `n/handle-callback-err`
+- `id-blacklist` / `id-denylist`
+- `id-match`
+- `@stylistic/implicit-arrow-linebreak`
+- `indent-legacy`
+- `@stylistic/jsx-quotes`
+- `@stylistic/line-comment-position`
+- `logical-assignment-operators`
+- `max-lines-per-function`
+- `max-lines`
+- `no-buffer-constructor` / `n/no-deprecated-api`
+- `no-catch-shadow`
+- `no-control-regex`
+- `@html-eslint/no-extra-spacing-attrs` (deprecated; replaced by `@html-eslint/no-extra-spacing-tags`)
+- `no-inline-comments`
+- `no-magic-numbers`
+- `no-mixed-requires` / `n/no-mixed-requires`
+- `no-native-reassign` (renamed to `no-global-assign`)
+- `no-negated-in-lhs` (replaced by `no-unsafe-negation`)
+- `no-new-object` (replaced by `no-object-constructor`)
+- `no-new-require` / `n/no-new-require`
+- `no-new-symbol` (replaced by `no-new-native-nonconstructor`)
+- `no-path-concat` / `n/no-path-concat`
+- `no-process-env` / `n/no-process-env`
+- `no-process-exit` / `n/no-process-exit`
+- `no-redeclare`
+- `@html-eslint/no-restricted-attr-values`
+- `@html-eslint/no-restricted-attrs`
+- `no-restricted-exports`
+- `no-restricted-globals`
+- `no-restricted-modules` / `n/no-restricted-require`
+- `no-restricted-properties`
+- `@html-eslint/no-restricted-tags`
+- `no-return-await` (deprecated with no replacement)
+- `no-spaced-func` (renamed to `function-call-spacing`)
+- `no-sync` / `n/no-sync`
+- `no-ternary`
+- `no-undefined`
+- `no-useless-return`
+- `no-warning-comments`
+- `prefer-reflect` (deprecated with no replacement)
+- `prefer-rest-params`
+- `require-atomic-updates`
+- `@html-eslint/require-attrs`
+- `css/selector-complexity`
+- `perfectionist/sort-decorators`
+- `sort-imports` / `sort-keys` / `sort-vars` (replaced by Perfectionist)
+- `css/use-layers`
