@@ -35,7 +35,7 @@ export default defineConfig([
         }
     },
     {
-        files: ['**/*.json'],
+        files: ['**/*.{json,jsonc}'],
         language: 'json/json',
         plugins: {
             json: Json

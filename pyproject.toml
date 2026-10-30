@@ -1,0 +1,16 @@
+[tool.ruff]
+cache-dir = "~/.cache/ruff"
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+    "B006",
+    "E4",
+    "E9",
+    "F",
+    "I",
+    "N"
+]

@@ -10,6 +10,7 @@ This file holds the rules for every task. Topic standards are read only when the
 - **CSS:** Read `standards/css.md` before writing or changing styles.
 - **UI and user-facing text:** Read `standards/ui.md` before building or changing interfaces, HTML, or anything users read.
 - **JavaScript:** Read `standards/javascript.md` before writing or changing JavaScript.
+- **Python:** Read `standards/python.md` before writing or changing Python.
 - **ESLint rules:** Read `.eslint/README.md` before adding, removing, changing, or disabling a rule.
 - **These standards:** Read `standards/README.md` before editing this file or anything in `standards/`.
 

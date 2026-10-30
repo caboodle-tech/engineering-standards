@@ -12,5 +12,5 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix"
     },
-     "type": "module"
+    "type": "module"
 }

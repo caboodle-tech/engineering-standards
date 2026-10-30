@@ -17,6 +17,15 @@ AI assistants read these files constantly, so every line costs attention in ever
 - **Give each rule one home.** Never repeat a rule across files; if two topics share it, move it to `AGENTS.md`.
 - **Remove rules when they become obsolete,** such as when a linter starts enforcing them or the practice changes.
 
+## Adding a Topic File
+
+1. **Read the tool configs first,** such as `eslint.config.js` or `pyproject.toml`, and list what they already enforce. Those rules stay out.
+2. **Read `AGENTS.md` and the existing topic files.** Drop anything they already say, such as indentation, naming, or control flow.
+3. **Match the shape of `standards/javascript.md`:** A flat list of a handful of bold rules. A first draft over about 2 KB usually still holds general advice.
+4. **Put shared tool setup in the topic file,** such as how a formatter runs. Project Notes are only for facts about one project, and `AGENTS.md` loads in every session.
+5. **Write rules an AI can act on.** Avoid hedges like "use judgment" and steps only a person can do, such as pressing a key; say what the AI should do or report instead.
+6. **Add the trigger line to Read Before You Work** in `AGENTS.md`, then check file sizes with `wc -c`.
+
 ## How to Write It
 
 - **Start with a bold rule, then add one or two sentences.** Explain why only when the reason prevents misapplying the rule.

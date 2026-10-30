@@ -1,5 +1,6 @@
 {
     "recommendations": [
+        "charliermarsh.ruff",
         "dbaeumer.vscode-eslint",
         "PKief.material-icon-theme"
     ]
