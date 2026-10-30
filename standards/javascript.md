@@ -4,6 +4,8 @@
 - **Prefer arrow functions.** Always use parentheses around parameters and braces around bodies; no implicit returns such as `x => x` or `() => value`.
 - **Write meaningful JSDoc.** Document classes, exported functions, and significant APIs when it clarifies purpose, parameters, return values, side effects, or contracts. Skip documentation that restates the code.
 - **Order declarations predictably.** Place file-level constants and shared state before functions. In classes, place properties before the constructor, following the ESLint ordering rules. Keep local values in the smallest practical scope.
+- **Run independent work together.** When awaits do not depend on each other, start them together with `Promise.all`. Await inside a loop only when each step needs the previous one, shares a transaction, or must be throttled.
+- **Name before you wrap.** When a line runs long, first pull part of it into a well-named `const`. Wrap only when there is nothing meaningful to name, and then put one item per line.
 - **Centralize regular expressions.** Define every pattern in a file-level `REGEX` object with descriptive names, even when used once. Share patterns across files only when their meaning is identical.
 
 ```js

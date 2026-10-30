@@ -6,26 +6,32 @@
 
 - Perfectionist ordering — imports are grouped by kind (Node built-ins and npm packages, then local files) and alphabetized within each group. Objects are sorted at every nesting level; spreads act as fences. Only string arrays assigned directly to a variable are sorted, because other arrays are often positional, such as `['error', 'always']` or `[x, y]`. Top-level `const` declarations, including arrow functions, stay in dependency order; `perfectionist/sort-modules` sorts only `class` and `function` declarations. Autofix can reorder code with side effects, so review `--fix` output.
 - `accessor-pairs` — replaced by `perfectionist/sort-classes`: properties (including arrow-function properties), constructor, getters, setters, then regular methods. Each group is alphabetized by member name; `#` is ignored, and `static`/private members are not split into their own groups.
-- `complexity` — LOL vs. SOL.
-- `eqeqeq` — LOL vs. SOL.
+- `complexity` — replaced by `caboodle/complexity` (still 20, LOL vs. SOL), an adapted copy of the core rule (MIT, notice kept in the file) that does not count fallbacks: `?.`, `??`, `??=`, and default parameter values. Real branches (`if`, `?:`, loops, `case`, `catch`, `&&`, `||`) still count. It uses only ESLint's public rule API.
+- `consistent-return` — LOL vs. SOL for framework hooks where returning a value and returning nothing mean different things, such as a Fastify hook that must return the reply to stop a request. Prefer throwing an HTTP error the framework's error handler turns into the reply; disable only the line that must return the reply, with the reason.
+- `eqeqeq` — `{ null: 'ignore' }`: `x == null` and `x != null` are allowed because they mean "null or undefined" in one check; every other loose comparison is banned. LOL vs. SOL.
 - `for-direction` — LOL vs. SOL, such as a loop whose counter is also changed inside the body.
 - `func-names` — `'never'`; arrow functions are preferred, so `prefer-arrow-callback` warns.
 - `func-style` — LOL vs. SOL. Avoid the `function` keyword in new code. Generators cannot be arrow functions, so `const ids = function* () {};` or a disable is acceptable.
 - `grouped-accessor-pairs` — omitted; it conflicts with `perfectionist/sort-classes`, which sorts all getters before all setters.
+- `init-declarations` — omitted; declaring a `let` and assigning it in each branch or a `try` is normal and readable. A placeholder such as `''` or `null` can change behavior where `undefined` means "none," such as a request with no body.
+- `id-length` — `properties: 'never'`, because property names are often set by a URL, SVG, HTML, or an API (`q`, `d`, `a`); variable and parameter names are still checked. `a` and `b` are allowed for sort comparators, beside `i`, `j`, `x`, `y`, and `_`.
 - `lines-around-directive` / `newline-after-var` / `newline-before-return` — replaced by `@stylistic/padding-line-between-statements`.
 - `@stylistic/linebreak-style` — `.gitattributes` keeps git from converting files to `CRLF` on Windows.
+- `@stylistic/lines-around-comment` / `perfectionist/sort-imports` — sorting moves a comment with the import below it, and the blank line `lines-around-comment` then adds above the comment is removed by the sort, so `--fix` loops. `caboodle/import-comments` moves every comment on its own line between imports into the file header's `Import notes:` list and marks the import it described with a trailing `// [A]`, which travels with that import. `sort-imports` uses `partitionByComment` so the header, the only comment left above the imports, stays on top without a blank line; with no other comments between imports, every import is still sorted. `eslint-disable` directives stay where they are.
 - `max-classes-per-file` — LOL vs. SOL. A closely tied helper class can stay with its main class, such as a `Node` class beside a linked list.
-- `max-depth` / `@stylistic/max-len` / `max-statements` — LOL vs. SOL.
+- `max-depth` / `@stylistic/max-len` — LOL vs. SOL.
+- `max-statements` — replaced by `caboodle/max-statements` (still 30, LOL vs. SOL), an adapted copy of the core rule (MIT, notice kept in the file) that does not count a statement that only defines a helper function, such as `const save = () => { ... };`. Each helper is checked on its own, so a setup function made of small named steps is not flagged for that style. It uses only ESLint's public rule API.
 - `max-params` — LOL vs. SOL. Prefer an options object (`ops`) over a long parameter list.
 - `@stylistic/max-statements-per-line` — one-line blocks such as `if (ready) { start(); }` are flagged too, so `@stylistic/brace-style` uses `allowSingleLine: false` to agree.
-- `@stylistic/multiline-comment-style` — `caboodle/jsdoc-block-comments` also requires `/**` openings; `/*!` license comments and `eslint`/`global` directive comments are exempt.
-- `no-await-in-loop` — LOL vs. SOL, such as rate limits or steps that depend on the previous one.
+- `@stylistic/multiline-comment-style` — replaced by `caboodle/multiline-comment-style` ('starred-block'), the same rule taken from the plugin's public `rules` export, except it never reports or rewrites a `/*!` comment (licenses and other text kept as written); its 'starred-block' style has no option for that. `@stylistic/spaced-comment` accepts `!` as a block marker for the same reason. `caboodle/jsdoc-block-comments` also requires `/**` openings; `/*!` comments and `eslint`/`global` directive comments are exempt.
+- `caboodle/single-line-block-comments` — a one-line `/* ... */` becomes `// ...` when it fits within `@stylistic/max-len`, or a wrapped `/** ... */` block when it does not; a comment at the end of a code line stays there as `//` if the line still fits, otherwise it moves above the line. JSDoc, `/*!` comments, directives, section dividers (starting and ending with three or more of the same `-`, `=`, `_`, or `~`, such as `/* ----- Save ----- */`), and comments with code after them on the same line are left alone.
+- `no-await-in-loop` — omitted; loops usually await on purpose (one transaction connection, retries that depend on the last try, throttled jobs). `standards/javascript.md` covers starting independent work together instead.
 - `no-bitwise` — LOL vs. SOL.
 - `no-class-assign` / `no-func-assign` — LOL vs. SOL, such as nulling out a class to prevent further use.
 - `no-confusing-arrow` / `no-eq-null` / `@stylistic/no-mixed-spaces-and-tabs` / `no-unused-labels` / `nonblock-statement-body-position` / `one-var-declaration-per-line` / `vars-on-top` — omitted; already covered by `arrow-body-style`, `eqeqeq`, `@stylistic/indent`, `no-labels`, `curly`, `one-var`, and `no-var`.
 - `no-console` / `no-debugger` — warnings in development, errors when `NODE_ENV=production`. Remove before production unless explicitly disabled for that section.
 - `no-else-return` / `no-lonely-if` / `no-negated-condition` — support the "never nesting" style: return early and keep the main path unindented.
-- `no-empty-function` — LOL vs. SOL, for a true no-op.
+- `no-empty-function` — a deliberate no-op holds a one-line comment saying why it does nothing, which the rule accepts, so no disable is needed.
 - `no-eval` / `no-new-func` — when evaluating code is truly needed, prefer `new Function` over `eval()` and disable `no-new-func` for that section.
 - `no-extend-native` — LOL vs. SOL; monkey patching built-ins is sometimes intended.
 - `no-fallthrough` — off; intentional fall-through between `case` clauses, including into `default`, is allowed.
@@ -34,7 +40,9 @@
 - `no-restricted-imports` — empty ban list; each project adds its own `paths` and `patterns`.
 - `no-restricted-syntax` — LOL vs. SOL. Bans the `function` keyword; generators, class methods, getters, setters, and object methods are exempt because they cannot be arrow functions.
 - `no-undef` — browser and Node globals come from `.eslint/globals.min.json`, a maintained copy of the `browser` and `nodeBuiltin` sets from the `globals` package, kept in-repo to avoid a dependency. `nodeBuiltin` excludes CommonJS names such as `require` and `__dirname`. To add a global, add it to the matching set with `false` (read-only) or `true` (writable).
+- `no-use-before-define` — `variables: false`, because helpers are arrow-function `const`s, which are never hoisted, and a function may call a helper declared further down. Using a `const` or `let` before its line runs in the same scope, the case that throws a `ReferenceError`, is still an error.
 - `no-underscore-dangle` / `no-unused-vars` — a lone `_`, or a leading `_` on a function parameter or caught error, marks it as intentionally unused. Other `_`-prefixed names are flagged.
+- `prefer-named-capture-group` — replaced by `caboodle/named-capture-reads`, which warns only when a match result is read by group number (`match[1]`, `const [, a] = match`), the read that makes someone count parentheses. Numbered groups stay allowed in replace callbacks with named parameters, `$1` replacements, and backreferences. Use `(?:...)` for a group whose text is never read.
 - `@stylistic/no-tabs` — `.vscode/settings.json` makes the editor insert 4 spaces for a tab.
 - JSON — `.json` and `.jsonc` files are linted with the official `@eslint/json` plugin as strict JSON (`json/json`), so comments and trailing commas are errors even when VS Code identifies a file as JSONC. Object keys are sorted in ascending natural-alphanumeric order at every nesting level with `json/sort-keys`; indentation comes from the editor settings.
 - `@html-eslint/lowercase` — replaced by `caboodle/html-lowercase`, which reuses the plugin rule but allows `<!DOCTYPE html>`. It removes the plugin's `Doctype` check by name, so re-check it after `@html-eslint` upgrades.

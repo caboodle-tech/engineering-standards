@@ -41,7 +41,6 @@ export default {
         }
     ],
     '@stylistic/max-statements-per-line': ['error', { max: 1 }],
-    '@stylistic/multiline-comment-style': ['error', 'starred-block'],
     '@stylistic/multiline-ternary': ['error', 'always-multiline'],
     '@stylistic/new-parens': ['error', 'always'],
     '@stylistic/newline-per-chained-call': ['error', { ignoreChainWithDepth: 4 }],
@@ -80,7 +79,7 @@ export default {
     '@stylistic/space-unary-ops': ['error', { nonwords: false, words: true }],
     '@stylistic/spaced-comment': [
         'error', 'always', {
-            block: { balanced: true, exceptions: ['*'], markers: ['*'] },
+            block: { balanced: true, exceptions: ['*'], markers: ['!', '*'] },
             line: { markers: ['/'] }
         }
     ],
@@ -95,7 +94,6 @@ export default {
     'block-scoped-var': 'warn',
     camelcase: ['error', { properties: 'never' }],
     'capitalized-comments': 'warn',
-    complexity: ['warn', { max: 20 }],
     'consistent-return': 'error',
     'constructor-super': 'error',
     curly: ['error', 'all'],
@@ -103,25 +101,22 @@ export default {
     'default-case-last': 'error',
     'default-param-last': 'error',
     'dot-notation': ['error', { allowKeywords: true }],
-    eqeqeq: ['error', 'always'],
+    eqeqeq: ['error', 'always', { null: 'ignore' }],
     'for-direction': 'error',
     'func-name-matching': ['error', 'always'],
     'func-names': ['error', 'never'],
     'func-style': ['warn', 'expression'],
     'getter-return': 'error',
     'guard-for-in': 'warn',
-    'id-length': ['error', { exceptions: ['i', 'j', 'x', 'y', '_'], min: 2 }],
-    'init-declarations': ['warn', 'always'],
+    'id-length': ['error', { exceptions: ['i', 'j', 'x', 'y', '_', 'a', 'b'], min: 2, properties: 'never' }],
     'max-classes-per-file': ['warn', 2],
     'max-depth': ['warn', 4],
     'max-nested-callbacks': ['warn', 4],
     'max-params': ['warn', 6],
-    'max-statements': ['warn', 30],
     'new-cap': ['error', { capIsNew: false, newIsCap: true }],
     'no-alert': 'warn',
     'no-array-constructor': 'error',
     'no-async-promise-executor': 'error',
-    'no-await-in-loop': 'warn',
     'no-bitwise': 'warn',
     'no-caller': 'error',
     'no-case-declarations': 'error',
@@ -236,7 +231,7 @@ export default {
             varsIgnorePattern: '^_'
         }
     ],
-    'no-use-before-define': ['error', { classes: true, functions: false, variables: true }],
+    'no-use-before-define': ['error', { classes: true, functions: false, variables: false }],
     'no-useless-assignment': 'error',
     'no-useless-backreference': 'error',
     'no-useless-call': 'error',
@@ -277,7 +272,7 @@ export default {
     'perfectionist/sort-export-attributes': ['error', { type: 'natural' }],
     'perfectionist/sort-exports': ['error', { type: 'natural' }],
     'perfectionist/sort-import-attributes': ['error', { type: 'natural' }],
-    'perfectionist/sort-imports': ['error', { type: 'natural' }],
+    'perfectionist/sort-imports': ['error', { partitionByComment: true, type: 'natural' }],
     'perfectionist/sort-maps': ['error', { type: 'natural' }],
     'perfectionist/sort-modules': [
         'error', {
@@ -300,7 +295,6 @@ export default {
         }
     ],
     'prefer-exponentiation-operator': 'error',
-    'prefer-named-capture-group': 'warn',
     'prefer-numeric-literals': 'error',
     'prefer-object-has-own': 'error',
     'prefer-object-spread': 'error',

@@ -31,7 +31,14 @@ export default defineConfig([
         },
         rules: {
             ...JsRules,
-            'caboodle/jsdoc-block-comments': 'error'
+            'caboodle/complexity': ['warn', { max: 20 }],
+            'caboodle/import-comments': 'error',
+            'caboodle/jsdoc-block-comments': 'error',
+            'caboodle/max-statements': ['warn', 30],
+            'caboodle/multiline-comment-style': ['error', 'starred-block'],
+            'caboodle/named-capture-reads': 'warn',
+            // One-line comments wrap at the same width max-len allows.
+            'caboodle/single-line-block-comments': ['error', { max: JsRules['@stylistic/max-len'][1].code }]
         }
     },
     {
